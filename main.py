@@ -10,7 +10,7 @@ from pathlib import Path
 app = FastAPI()
 
 # ─── Configuração ────────────────────────────────────────────────────────────
-BASE_URL = "https://8049-191-177-187-192.ngrok-free.app"  # ⚠️ Troque pelo seu link real
+BASE_URL = BASE_URL = "https://momentosespeciais.com"  # ⚠️ Troque pelo seu link real
 TIPOS_PERMITIDOS = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 TAMANHO_MAX_MB = 5
 
