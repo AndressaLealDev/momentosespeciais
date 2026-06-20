@@ -10,7 +10,7 @@ from pathlib import Path
 app = FastAPI()
 
 # ─── Configuração ────────────────────────────────────────────────────────────
-BASE_URL = BASE_URL = "https://momentosespeciais.com"  # ⚠️ Troque pelo seu link real
+BASE_URL = "https://momentosespeciais-production.up.railway.app" # ⚠️ Troque pelo seu link real
 TIPOS_PERMITIDOS = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 TAMANHO_MAX_MB = 5
 
