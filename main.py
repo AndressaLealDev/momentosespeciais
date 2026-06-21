@@ -1,29 +1,28 @@
-n · PY
 from fastapi import FastAPI, UploadFile, Form, HTTPException
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import uuid, os, json, qrcode
 from pathlib import Path
- 
+
 app = FastAPI()
- 
+
 BASE_URL = os.getenv("BASE_URL", "https://momentosespeciais-production.up.railway.app")
 TIPOS_PERMITIDOS = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 TAMANHO_MAX_MB = 5
- 
+
 for pasta in ["uploads", "qrcodes", "dados"]:
     os.makedirs(pasta, exist_ok=True)
- 
+
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
- 
+
 DB_PATH = Path("dados/banco.json")
- 
+
 def carregar_banco():
     return json.loads(DB_PATH.read_text(encoding="utf-8")) if DB_PATH.exists() else {}
- 
+
 def salvar_banco(banco):
     DB_PATH.write_text(json.dumps(banco, ensure_ascii=False, indent=2), encoding="utf-8")
- 
+
 TEMAS = {
     "amor": {
         "nome": "Amor & Romance",
@@ -116,7 +115,7 @@ TEMAS = {
         "topo": "linear-gradient(90deg,#052e16,#15803d,#22c55e,#15803d,#052e16)",
     },
 }
- 
+
 @app.get("/", response_class=HTMLResponse)
 def home():
     temas_html = ""
@@ -131,7 +130,7 @@ def home():
           </div>
           <div style="background:{t['cor1']};padding:7px;text-align:center;font-size:11px;color:#fff;font-weight:500;letter-spacing:0.5px;">Selecionar</div>
         </div>"""
- 
+
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -198,13 +197,13 @@ def home():
                 <p>"Não precisa de uma data especial para dizer o quanto você ama alguém. O melhor momento é agora."</p>
             </div>
         </div>
- 
+
         <div class="corpo">
             <div class="section-title">🎨 Escolha o tema</div>
             <div class="temas-grid" id="temas-grid">
                 {temas_html}
             </div>
- 
+
             <div class="campo">
                 <label>📸 Foto especial</label>
                 <div class="upload-area">
@@ -216,32 +215,32 @@ def home():
                     <img id="preview" alt="Preview">
                 </div>
             </div>
- 
+
             <div class="campo">
                 <label>💌 Para quem é?</label>
                 <input type="text" id="destinatario" placeholder="Nome de quem vai receber" maxlength="60">
             </div>
- 
+
             <div class="campo">
                 <label>✍️ Sua mensagem</label>
                 <textarea id="carta" placeholder="Escreva do coração..." maxlength="2000" oninput="document.getElementById('cont').textContent=this.value.length"></textarea>
                 <div class="contador"><span id="cont">0</span>/2000</div>
             </div>
- 
+
             <div class="campo">
                 <label>💕 Seu nome</label>
                 <input type="text" id="remetente" placeholder="Seu nome (opcional)" maxlength="60">
             </div>
- 
+
             <div class="beneficios">
                 <div class="bene"><div class="bene-icon">🔗</div><div class="bene-txt">Link exclusivo para compartilhar</div></div>
                 <div class="bene"><div class="bene-icon">📱</div><div class="bene-txt">QR Code para imprimir</div></div>
                 <div class="bene"><div class="bene-icon">♾️</div><div class="bene-txt">Página permanente</div></div>
             </div>
- 
+
             <button class="btn" id="btn" onclick="criar()">💖 Criar minha mensagem especial</button>
             <div class="btn-sub">🔒 100% seguro e gratuito para testar</div>
- 
+
             <div class="prova">
                 <div class="avs">
                     <div class="av" style="background:linear-gradient(135deg,#e8526a,#c8384f)">M</div>
@@ -250,7 +249,7 @@ def home():
                 </div>
                 <div class="prova-txt"><strong>+3.200 pessoas</strong> já surpreenderam<br>alguém especial com Momentos Especiais</div>
             </div>
- 
+
             <div id="resultado" style="display:none;margin-top:24px;background:linear-gradient(135deg,#fff0f3,#ffe8ed);border:1.5px solid #e8b4bc;border-radius:14px;padding:24px;text-align:center">
                 <div style="font-size:40px;margin-bottom:10px">🎉</div>
                 <h2 style="font-family:'Playfair Display',serif;color:#7a1530;margin-bottom:8px">Mensagem criada!</h2>
@@ -264,16 +263,16 @@ def home():
         </div>
     </div>
 </div>
- 
+
 <script>
 let temaSelecionado = 'amor';
- 
+
 function selecionarTema(el) {{
     document.querySelectorAll('.tema').forEach(t => t.style.borderColor = 'transparent');
     temaSelecionado = el.dataset.tema;
     el.style.borderColor = '#333';
 }}
- 
+
 function previewFoto(input) {{
     const file = input.files[0]; if (!file) return;
     const r = new FileReader();
@@ -284,7 +283,7 @@ function previewFoto(input) {{
     }};
     r.readAsDataURL(file);
 }}
- 
+
 async function criar() {{
     const foto = document.getElementById('foto').files[0];
     const carta = document.getElementById('carta').value.trim();
@@ -310,7 +309,7 @@ async function criar() {{
     }} catch(e) {{ alert('Erro de conexão. Tente novamente.'); }}
     finally {{ btn.disabled = false; btn.textContent = '💖 Criar minha mensagem especial'; }}
 }}
- 
+
 function copiar() {{
     const link = document.getElementById('linkBox').textContent;
     navigator.clipboard.writeText(link).then(() => {{
@@ -319,7 +318,7 @@ function copiar() {{
         setTimeout(() => a.style.display = 'none', 2500);
     }});
 }}
- 
+
 // Contador animado
 const counts = [38,41,43,45,42,44,47,43,46,48];
 let ci = 0;
@@ -330,8 +329,8 @@ setInterval(() => {{
 </script>
 </body>
 </html>"""
- 
- 
+
+
 @app.post("/criar")
 async def criar(
     file: UploadFile,
@@ -350,14 +349,14 @@ async def criar(
         raise HTTPException(status_code=400, detail="A carta não pode estar vazia.")
     if tema not in TEMAS:
         tema = "amor"
- 
+
     codigo = str(uuid.uuid4())[:8]
     exts = {"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"}
     ext = exts.get(file.content_type, "jpg")
- 
+
     with open(f"uploads/{codigo}.{ext}", "wb") as f:
         f.write(conteudo)
- 
+
     banco = carregar_banco()
     banco[codigo] = {
         "carta": carta_limpa,
@@ -367,22 +366,22 @@ async def criar(
         "tema": tema,
     }
     salvar_banco(banco)
- 
+
     url = f"{BASE_URL}/p/{codigo}"
     img_qr = qrcode.make(url)
     img_qr.save(f"qrcodes/{codigo}.png")
- 
+
     return {"status":"ok","codigo":codigo,"pagina":url,"qr_code":f"{BASE_URL}/qrcode/{codigo}"}
- 
- 
+
+
 @app.get("/qrcode/{codigo}")
 def get_qrcode(codigo: str):
     caminho = f"qrcodes/{codigo}.png"
     if not os.path.exists(caminho):
         raise HTTPException(status_code=404, detail="QR Code não encontrado.")
     return FileResponse(caminho, media_type="image/png")
- 
- 
+
+
 @app.get("/p/{codigo}", response_class=HTMLResponse)
 def pagina(codigo: str):
     banco = carregar_banco()
@@ -392,7 +391,7 @@ def pagina(codigo: str):
     ext = dados.get("extensao", "jpg")
     if not os.path.exists(f"uploads/{codigo}.{ext}"):
         return _pagina_erro("Imagem não encontrada", "A imagem desta mensagem foi removida.")
- 
+
     tema_key = dados.get("tema", "amor")
     t = TEMAS.get(tema_key, TEMAS["amor"])
     nome_dest = dados.get("nome_destinatario", "")
@@ -400,7 +399,7 @@ def pagina(codigo: str):
     carta = dados["carta"]
     titulo = f"Para {nome_dest} {t['emoji']}" if nome_dest else f"{t['emoji']} Uma mensagem especial"
     assinatura = f"<p style='font-family:{t[\"fonte\"]},serif;font-size:15px;color:{t[\"cor2\"]};text-align:right;margin-top:8px;font-style:italic'>Com amor, {nome_rem} 💕</p>" if nome_rem else ""
- 
+
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -444,8 +443,8 @@ def pagina(codigo: str):
     </div>
 </body>
 </html>"""
- 
- 
+
+
 def _pagina_erro(titulo, mensagem):
     return f"""<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Erro</title>
 <style>body{{background:#0d0608;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}}.box{{text-align:center;padding:40px}}h1{{font-size:28px;margin-bottom:12px}}p{{opacity:.7}}</style>
