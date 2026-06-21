@@ -398,8 +398,9 @@ def pagina(codigo: str):
     nome_rem = dados.get("nome_remetente", "")
     carta = dados["carta"]
     titulo = f"Para {nome_dest} {t['emoji']}" if nome_dest else f"{t['emoji']} Uma mensagem especial"
-    assinatura = f"<p style='font-family:{t[\"fonte\"]},serif;font-size:15px;color:{t[\"cor2\"]};text-align:right;margin-top:8px;font-style:italic'>Com amor, {nome_rem} 💕</p>" if nome_rem else ""
-
+    fonte = t['fonte']
+cor2 = t['cor2']
+assinatura = f"<p style='font-family:{fonte},serif;font-size:15px;color:{cor2};text-align:right;margin-top:8px;font-style:italic'>Com amor, {nome_rem} 💕</p>" if nome_rem else ""
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
